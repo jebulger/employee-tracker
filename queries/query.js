@@ -11,6 +11,88 @@ const viewAllEmployees = (db) => {
     });
 };
 
+const viewAllRoles = (db) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM role';
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+const viewAllDepartments = (db) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM department';
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
+const getAllEmployees = (db) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT id, CONCAT (first_name, ' ', last_name) AS name FROM employee`;
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                const employees = result.map((row) => ({
+                    name: row.name,
+                    value: row.id,
+                }));
+                resolve(employees);
+            }
+        });
+    });
+};
+
+const getAllRoles = (db) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT id, title FROM role';
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                const roles = result.map((row) => ({
+                    name: row.title,
+                    value: row.id,
+                }));
+                resolve(roles);
+            }
+        });
+    });
+};
+
+const getAllDepartments = (db) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT id, name FROM department';
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                const departments = result.map((row) => ({
+                    name: row.name,
+                    value: row.id,
+                }));
+                resolve(departments);
+            }
+        });
+    });
+};;
+
 const addEmployee = (db, employee) => {
     const {firstName, lastName, role, managedBy} = employee;
 
@@ -59,6 +141,9 @@ const addDepartment = (db, department) => {
 
 module.exports = {
     viewAllEmployees,
+    getAllEmployees,
+    getAllRoles,
+    getAllDepartments,
     addEmployee,
     updateRole,
     viewAllRoles,
