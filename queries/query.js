@@ -1,13 +1,19 @@
 const viewAllEmployees = (db) => {
-    const sql = 'SELECT * FROM employee';
-
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.table(result);
-        beginPrompts();
+    return new Promise((resolve, reject) => {
+        const sql = `
+        SELECT e.id, e.first_name, e.last_name, r.title AS role, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
+        FROM employee_db.employee e
+        LEFT JOIN employee_db.role r ON e.role_id = r.id
+        LEFT JOIN employee_db.department d ON r.department_id = d.id
+        LEFT JOIN employee_db.employee m ON e.manager_id = m.id
+        `;
+        db.query(sql, (err, res) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
     });
 };
 
@@ -105,7 +111,6 @@ const addEmployee = (db, employee) => {
             return;
         }
         console.log('Employee added successfully');
-        beginPrompts();
     });
 };
 
@@ -120,12 +125,10 @@ const addRole = (db, role) => {
             return;
         }
         console.log('Role added successfully');
-        beginPrompts();
     });
 };
 
-const addDepartment = (db, department) => {
-    const {newDepartment} = department;
+const addDepartment = (db, newDepartment) => {
     const sql = `INSERT INTO department (name) VALUES (?)`;
     const values = [newDepartment];
 
@@ -135,7 +138,20 @@ const addDepartment = (db, department) => {
             return;
         }
         console.log('Department added successfully');
-        beginPrompts();
+    });
+};
+
+const updateRole = (db, employee) => {
+    const {employeeName, updatedRole} = employee;
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    const values = [employeeName, updatedRole];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log('Employee role successfully updated');
     });
 };
 

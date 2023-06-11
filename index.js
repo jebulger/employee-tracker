@@ -5,7 +5,7 @@ const query = require('./queries/query');
 
 const db = mysql.createConnection({
     host: 'localhost',
-    port: 3001,
+    port: 3306,
     user: 'root',
     password: '12345678',
     database: 'employee_db'
@@ -34,7 +34,15 @@ function beginPrompts() {
         ])
         .then((answers) => {
             if (answers.choices === 'View All Employees') {
-                query.viewAllEmployees(db);
+                query.viewAllEmployees(db)
+                    .then((employee) => {
+                        console.table(employee);
+                        beginPrompts();
+                    })
+                    .catch((err) => {
+                        console.error('Error occured while obtaining list of employees', err);
+                        beginPrompts();
+                    })
             } else if (answers.choices === 'Add Employee') {
                 Promise.all([query.getAllRoles(db), query.getAllEmployees(db)])
                     .then(([roles, employees]) => {
@@ -71,6 +79,7 @@ function beginPrompts() {
                                 managedBy: answers.managedBy
                             }
                             query.addEmployee(db, employee);
+                            beginPrompts();
                         });  
                     })
                     .catch((err) => {
@@ -78,9 +87,9 @@ function beginPrompts() {
                         beginPrompts();
                     });
             } else if (answers.choices === 'Update Employee Role') {
-                query.getAllEmployees()
+                query.getAllEmployees(db)
                     .then((employees) => {
-                        return Promise.all([employees, query.getAllRoles()]);
+                        return Promise.all([employees, query.getAllRoles(db)]);
                     })
                     .then(([employees, roles]) => {
                         inquirer
@@ -105,6 +114,7 @@ function beginPrompts() {
                                 role: updatedRole,
                             };
                             query.updateRole(employee);
+                            beginPrompts();
                         });
                     })
                     .catch((err) => {
@@ -150,6 +160,7 @@ function beginPrompts() {
                                 roleDepartment: answers.roleDepartment
                             }
                             query.addRole(db, newRole);
+                            beginPrompts();
                         });
                     })
                     .catch((err) => {
@@ -176,20 +187,19 @@ function beginPrompts() {
                         }
                     ])
                     .then((answers) => {
-                        const newDepartment = {
-                            newDepartment: answers.newDepartment
-                        }
-                        query.addDepartment(newDepartment);
+                        const newDepartment = answers.newDepartment;
+                        query.addDepartment(db, newDepartment);
+                        beginPrompts();
                     })
                     .catch((err) => {
                         console.error('Error occured while adding a department to the database', err);
                         beginPrompts();
                     })
-            } else {
-                console.log('You have quit the Employee Manager');
-                db.end()
+            } else if (answers.choices === 'Quit') {
+                console.log('You have quit the employee_db database');
+                process.exit();
             }
-        });
-}
+        })
+};
 
 beginPrompts();
