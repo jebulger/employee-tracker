@@ -186,7 +186,7 @@ function beginPrompts() {
                         beginPrompts();
                     })
             } else {
-                console.log('Quitting');
+                console.log('You have quit the Employee Manager');
                 db.end()
             }
         });
