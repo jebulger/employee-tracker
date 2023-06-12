@@ -16,4 +16,4 @@ Upon downloading the application:
 8. You can exit the database by selecting <strong>'Quit'</strong>.
 
 ## Tutorial
-[Click here to be directed to the tutorial video]()
+[Click here to be directed to the tutorial video](https://drive.google.com/file/d/1HsT6AV54jWjK-cN2l8ZciFdX0Kz7xvIj/view)
