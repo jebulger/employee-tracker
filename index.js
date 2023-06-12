@@ -81,7 +81,7 @@ function beginPrompts() {
                             },
                         ])
                         .then((answers) => {
-                            const {manager} = answers.managedBy;
+                            const manager = answers.managedBy;
                             const employee = {
                                 firstName: answers.firstName,
                                 lastName: answers.lastName,
