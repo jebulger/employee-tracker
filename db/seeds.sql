@@ -1,3 +1,4 @@
+-- Seeds that can be inserted into the database
 use employee_db;
 
 INSERT INTO department (name) VALUES ('Sales');

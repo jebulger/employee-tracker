@@ -1,8 +1,11 @@
+// Declaring requirements
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
+// Importing functions from query.js file found inside the queries directory
 const query = require('./queries/query');
 
+// Creating mysql connection
 const db = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -13,6 +16,7 @@ const db = mysql.createConnection({
     console.log('Connected to the employee_db database.')
 );
 
+// Function to begin the prompts
 function beginPrompts() {
     inquirer
         .prompt([
@@ -34,7 +38,9 @@ function beginPrompts() {
         ])
         .then((answers) => {
             if (answers.choices === 'View All Employees') {
+                // Calls the exported function from query.js to view employees
                 query.viewAllEmployees(db)
+                    // Displays them as a table into the console for the user interface
                     .then((employee) => {
                         console.table(employee);
                         beginPrompts();
@@ -44,8 +50,11 @@ function beginPrompts() {
                         beginPrompts();
                     })
             } else if (answers.choices === 'Add Employee') {
+                // Obtains all roles and employees before prompting the user 
+                // and then adding that new employee into the database
                 Promise.all([query.getAllRoles(db), query.getAllEmployees(db)])
                     .then(([roles, employees]) => {
+                        // Prompting the user for details on the new employee
                         inquirer
                         .prompt([
                             {
@@ -89,6 +98,9 @@ function beginPrompts() {
                         beginPrompts();
                     });
             } else if (answers.choices === 'Update Employee Role') {
+                // Obtaining all employees and their roles in the database
+                // then prompts the user to select an existing employee and ask which
+                // role the employee should be given
                 query.getAllEmployees(db)
                     .then((employees) => {
                         return Promise.all([employees, query.getAllRoles(db)]);
@@ -125,6 +137,8 @@ function beginPrompts() {
                         beginPrompts();
                     });
             } else if (answers.choices === 'View All Roles') {
+                // Obtains all the roles in the database and displays them as a table inside
+                // the console
                 query.viewAllRoles(db)
                     .then((roles) => {
                         console.table(roles);
@@ -135,6 +149,8 @@ function beginPrompts() {
                         beginPrompts();
                     })
             } else if (answers.choices === 'Add Role') {
+                // Grabs all roles before prompting the user for details on the new role
+                // Then inserts the new role into the database
                 query.getAllDepartments(db)
                     .then((departments) => {
                         inquirer
@@ -172,6 +188,8 @@ function beginPrompts() {
                         beginPrompts();
                     });
             } else if (answers.choices === 'View All Departments') {
+                // Obtains all the departments stored into the database and displays them as a table
+                // inside of the console
                 query.viewAllDepartments(db)
                     .then((departments) => {
                         console.table(departments);
@@ -201,10 +219,12 @@ function beginPrompts() {
                         beginPrompts();
                     })
             } else if (answers.choices === 'Quit') {
+                // Quits the application
                 console.log('You have quit the employee_db database');
                 process.exit();
             }
         })
 };
 
+// Calling function to begin the prompts/interface 
 beginPrompts();

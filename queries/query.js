@@ -1,4 +1,5 @@
 const viewAllEmployees = (db) => {
+    // Retrieves all information stored in the employee database
     return new Promise((resolve, reject) => {
         const sql = `
         SELECT e.id, e.first_name, e.last_name, r.title AS role, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager
@@ -18,6 +19,7 @@ const viewAllEmployees = (db) => {
 };
 
 const viewAllRoles = (db) => {
+    // Grabs all records found within the role table
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM role';
 
@@ -32,6 +34,7 @@ const viewAllRoles = (db) => {
 };
 
 const viewAllDepartments = (db) => {
+    // Grabs all the records found within the department table
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM department';
 
@@ -46,6 +49,7 @@ const viewAllDepartments = (db) => {
 };
 
 const getAllEmployees = (db) => {
+    // Grabs the employee's id and names, concatenating the first and last name
     return new Promise((resolve, reject) => {
         const sql = `SELECT id, CONCAT (first_name, ' ', last_name) AS name FROM employee`;
 
@@ -64,6 +68,7 @@ const getAllEmployees = (db) => {
 };
 
 const getAllRoles = (db) => {
+    // Grabs all ids and role titles found within the role table
     return new Promise((resolve, reject) => {
         const sql = 'SELECT id, title FROM role';
 
@@ -82,6 +87,7 @@ const getAllRoles = (db) => {
 };
 
 const getAllDepartments = (db) => {
+    // Grabs all department names with their ids inside of the department table
     return new Promise((resolve, reject) => {
         const sql = 'SELECT id, name FROM department';
 
@@ -100,6 +106,8 @@ const getAllDepartments = (db) => {
 };;
 
 const addEmployee = (db, employee) => {
+    // Grabs new employee's first name, last name, role, and who they are managed by
+    // as a parameter, Then inserts them into the database
     const {firstName, lastName, role, managedBy} = employee;
 
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
@@ -114,6 +122,7 @@ const addEmployee = (db, employee) => {
 };
 
 const addRole = (db, role) => {
+    // Grabs new role information and uses query to insert them into the databse
     const {roleName, roleSalary, roleDepartment} = role;
     const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
     const values = [roleName, roleSalary, roleDepartment];
@@ -127,6 +136,7 @@ const addRole = (db, role) => {
 };
 
 const addDepartment = (db, newDepartment) => {
+    // Grabs new department information and executes a query to insert them into the database
     const sql = `INSERT INTO department (name) VALUES (?)`;
     const values = [newDepartment];
 
@@ -139,6 +149,8 @@ const addDepartment = (db, newDepartment) => {
 };
 
 const updateRole = (db, employee) => {
+    // Grabs new role information, and executes query to insert them into the database
+    // where the user selected employee is found within the database
     const {employeeName, updatedRole} = employee;
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
     const values = [updatedRole, employeeName];
@@ -151,6 +163,7 @@ const updateRole = (db, employee) => {
     });
 };
 
+// Exporting to be used within index.js file
 module.exports = {
     viewAllEmployees,
     getAllEmployees,
