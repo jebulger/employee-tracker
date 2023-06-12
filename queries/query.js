@@ -102,7 +102,7 @@ const getAllDepartments = (db) => {
 const addEmployee = (db, employee) => {
     const {firstName, lastName, role, managedBy} = employee;
 
-    const sql = `INSERT INTO employee (first_name, last_name, role, manager) VALUES (?, ?, ?, ?)`;
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
     const values = [firstName, lastName, role, managedBy];
 
     db.query(sql, values, (err, result) => {
@@ -110,7 +110,6 @@ const addEmployee = (db, employee) => {
             console.error(err);
             return;
         }
-        console.log('Employee added successfully');
     });
 };
 
@@ -124,7 +123,6 @@ const addRole = (db, role) => {
             console.error(err);
             return;
         }
-        console.log('Role added successfully');
     });
 };
 
@@ -137,21 +135,19 @@ const addDepartment = (db, newDepartment) => {
             console.error(err);
             return;
         }
-        console.log('Department added successfully');
     });
 };
 
 const updateRole = (db, employee) => {
     const {employeeName, updatedRole} = employee;
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-    const values = [employeeName, updatedRole];
+    const values = [updatedRole, employeeName];
 
     db.query(sql, values, (err, result) => {
         if (err) {
             console.error(err);
             return;
         }
-        console.log('Employee role successfully updated');
     });
 };
 

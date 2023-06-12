@@ -68,17 +68,19 @@ function beginPrompts() {
                                 type: 'list',
                                 name: 'managedBy',
                                 message: 'Who is their manager?',
-                                choices: employees,
+                                choices: ['None', ...employees],
                             },
                         ])
                         .then((answers) => {
+                            const {manager} = answers.managedBy;
                             const employee = {
                                 firstName: answers.firstName,
                                 lastName: answers.lastName,
                                 role: answers.role,
-                                managedBy: answers.managedBy
+                                managedBy: manager === 'None' ? null : manager,
                             }
                             query.addEmployee(db, employee);
+                            console.log('Employee added to database');
                             beginPrompts();
                         });  
                     })
@@ -110,10 +112,11 @@ function beginPrompts() {
                         .then((answers) => {
                             const {employeeName, updatedRole} = answers;
                             const employee = {
-                                name: employeeName,
-                                role: updatedRole,
+                                employeeName,
+                                updatedRole,
                             };
-                            query.updateRole(employee);
+                            query.updateRole(db, employee);
+                            console.log('Employee role has been updated');
                             beginPrompts();
                         });
                     })
@@ -160,6 +163,7 @@ function beginPrompts() {
                                 roleDepartment: answers.roleDepartment
                             }
                             query.addRole(db, newRole);
+                            console.log('Role has been added to database');
                             beginPrompts();
                         });
                     })
@@ -189,6 +193,7 @@ function beginPrompts() {
                     .then((answers) => {
                         const newDepartment = answers.newDepartment;
                         query.addDepartment(db, newDepartment);
+                        console.log('Department has been added to database');
                         beginPrompts();
                     })
                     .catch((err) => {
